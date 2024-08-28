@@ -1,0 +1,93 @@
+aside {
+    /* width: 20%; */
+    height: 100vh;
+    width: 15%;
+    background-color: rgb(25, 67, 89);
+    min-width: 17rem;
+  }
+  
+  .cth-logo {
+    width: 100%;
+    border-bottom: 3px solid rgba(255, 255, 255, 0.37);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 9rem;
+  }
+  
+  .sideLogo {
+    width: 15rem;
+  }
+  
+  .sidebar-list {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  
+  .item-list {
+    gap: 1rem;
+  }
+  
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 3rem;
+    width: 85%;
+    margin-left: 15%;
+    /* border: 2px solid red; */
+    gap: 1rem;
+    /* padding: 1rem; */
+  }
+  
+  .hold {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  
+  .item-text {
+    font-size: 1.4rem;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+    font-weight: 600;
+  }
+  
+  .item-icon {
+    color: white;
+    width: 4rem;
+    font-size: 1.5rem;
+    align-self: center;
+  }
+  
+  .sidebar-link.active {
+    background-color: rgb(236, 236, 236);
+    border-top-left-radius: 5rem;
+    border-bottom-left-radius: 5rem;
+    padding: 0.8rem;
+    width: 30rem;
+  }
+  
+  .sidebar-link.active .item-text {
+    color: rgb(25, 67, 89); /* Change the text color to blue */
+  }
+  
+  .sidebar-link.active .item-icon {
+    color: rgb(25, 67, 89); /* Change the icon color to blue */
+  }
+
+  .sidebar-link:focus,
+.sidebar-link:hover,
+.sidebar-link:visited,
+.sidebar-link:link,
+.sidebar-link:active {
+  text-decoration: none; 
+  outline: none;   
+}
+  
