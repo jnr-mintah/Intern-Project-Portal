@@ -64,7 +64,7 @@ function Form() {
           password: "",
         });
       }
-      navigate("/profile");
+      navigate("/projects");
     } catch (error) {
       console.error(`${isLogin ? "Login" : "Registration"} Error:`, error);
       const errorMessage =

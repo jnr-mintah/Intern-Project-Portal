@@ -7,14 +7,7 @@ function Profile() {
     <>
       <div className="profile">
         <Sidebar />
-        <div className="profile-side">
-            <div className="head">
-                <div className="profile-pic">
-                    <img className="human" src={human} alt="" />
-                </div>
-                <div className="bio"></div>
-            </div>
-        </div>
+        
       </div>
     </>
   );

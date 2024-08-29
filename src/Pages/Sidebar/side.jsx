@@ -8,9 +8,9 @@ import logo from "/src/assets/cthLogo.png"
 function Sidebar() {
 
   const sidebarItems = [
-    { text: "Profile", icon: faUsers, path: "/profile" },
     { text: "Projects", icon: faRocket, path: "/projects" },
-    { text: "Reporting", icon: faFile, path: "/reporting" },
+    { text: "Reports", icon: faFile, path: "/reporting" },
+    { text: "Profile", icon: faUsers, path: "/profile" },
   ];
 
   return (

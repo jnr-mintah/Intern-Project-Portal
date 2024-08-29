@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../My Projects/projects.css";
 import Sidebar from "../Sidebar/side";
 import Modal from "react-modal";
@@ -11,13 +11,16 @@ import "react-toastify/dist/ReactToastify.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSave,
-  faCancel,
   faClose,
   faAdd,
   faEdit,
   faTrashCan,
+  faEllipsisV,
+  faLink,
+  faCopy,
+  faExternalLinkSquare,
+  faRocket,
 } from "@fortawesome/free-solid-svg-icons";
-import { faAd } from "@fortawesome/free-solid-svg-icons/faAd";
 
 Modal.setAppElement("#root");
 
@@ -31,6 +34,8 @@ function Projects() {
     title: "",
     description: "",
     githubUrl: "",
+    hostedUrl: "",
+    dateAdded: "",
   });
 
   const [editProject, setEditProject] = useState({
@@ -38,13 +43,12 @@ function Projects() {
     title: "",
     description: "",
     githubUrl: "",
+    hostedUrl: "",
+    dateAdded: "",
   });
 
-  const [theProjects, setTheProjects] = useState([]);
-
-  const filteredProjects = theProjects.filter((project) =>
-    project.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const [projects, setProjects] = useState([]);
+  const [visibleButtons, setVisibleButtons] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -66,27 +70,13 @@ function Projects() {
     setIsLoading(true);
 
     try {
-      const response = await axios.post(
-        apiURL,
-        {
-          InternId: userId,
-          title: newProject.title,
-          description: newProject.description,
-          githubUrl: newProject.githubUrl,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const createdProject = response.data;
-
-      setTheProjects((prev) => [...prev, createdProject]);
-
-      // Show success toast
-      toast.success("New project added successfully!");
+      await axios.post(apiURL, {
+        InternId: userId,
+        title: newProject.title,
+        description: newProject.description,
+        dateAdded: newProject.date,
+      });
+      getProject();
     } catch (error) {
       console.error("Error:", error);
       toast.error("There was an error adding the project.");
@@ -98,12 +88,34 @@ function Projects() {
       title: "",
       description: "",
       githubUrl: "",
+      hostedUrl: "",
+      dateAdded: "",
     });
     setModalIsOpen(false);
   };
 
+  const getProject = async () => {
+    let userId = localStorage.getItem("userId");
+
+    const apiURL = `https://cth-interns-portal.onrender.com/api/intern/projects/all/${userId}`;
+
+    try {
+      setIsLoading(true);
+
+      const response = await axios.get(apiURL);
+
+      const createdProject = response.data;
+      setProjects(createdProject);
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("There was an error fetching the projects.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleEditProject = () => {
-    setTheProjects((prev) =>
+    setProjects((prev) =>
       prev.map((project, i) =>
         i === editProject.index ? editProject : project
       )
@@ -113,20 +125,52 @@ function Projects() {
       title: "",
       description: "",
       githubUrl: "",
+      hostedUrl: "",
+      dateAdded: "",
     });
     setEditModalIsOpen(false);
     toast.success("Project updated successfully!");
   };
 
   const handleDeleteProject = (index) => {
-    setTheProjects((prev) => prev.filter((_, i) => i !== index));
+    setProjects((prev) => prev.filter((_, i) => i !== index));
     toast.success("Project deleted successfully!");
   };
 
   const openEditModal = (index) => {
-    setEditProject({ ...theProjects[index], index });
+    setEditProject({ ...projects[index], index });
     setEditModalIsOpen(true);
   };
+
+  const toggleButtons = (index) => {
+    setVisibleButtons(visibleButtons === index ? null : index);
+  };
+
+  const copyGitUrl = (url) => {
+    navigator.clipboard.writeText(url).then(
+      () => {
+        toast.success("GitHub URL copied to clipboard!");
+      },
+      (err) => {
+        toast.error("Failed to copy the URL.");
+      }
+    );
+  };
+
+  const copyHostingUrl = (url) => {
+    navigator.clipboard.writeText(url).then(
+      () => {
+        toast.success("Hosting URL copied to clipboard!");
+      },
+      (err) => {
+        toast.error("Failed to copy the URL.");
+      }
+    );
+  };
+
+  useEffect(() => {
+    getProject();
+  }, []);
 
   return (
     <>
@@ -134,7 +178,10 @@ function Projects() {
         <Sidebar />
         <div className="right-side">
           <div className="p-nav">
-            <h1>PROJECTS</h1>
+            <span>
+              <FontAwesomeIcon icon={faRocket} />
+              <h1>PROJECTS</h1>
+            </span>
             <div className="user-info">
               <h2>Username</h2>
               <p>Intern</p>
@@ -152,7 +199,11 @@ function Projects() {
             <button onClick={() => setModalIsOpen(true)}>New Project</button>
           </div>
           <div className="projects">
-            {theProjects.length === 0 ? (
+            {isLoading ? (
+              <div className="spin">
+                <SpinnerRing color="blue" borderWidth={7} width="3.1rem" />
+              </div>
+            ) : projects.length === 0 ? (
               <div className="empty-projects">
                 <h2>Add New Project</h2>
               </div>
@@ -160,26 +211,63 @@ function Projects() {
               <div className="project-card">
                 <div className="intern-card">
                   <div className="interns">
-                    {filteredProjects.map((project, index) => (
+                    {projects.map((project, index) => (
                       <div key={index} className="project-item">
                         <div className="project-info">
-                          <h3>{project.title}</h3>
+                          <div className="title-n-dots">
+                            <h3>{project.title}</h3>
+                            <div className="dot-edit-delete">
+                              {visibleButtons === index && (
+                                <div className="buttons">
+                                  <button
+                                    className="delete"
+                                    onClick={() => handleDeleteProject(index)}
+                                  >
+                                    <FontAwesomeIcon icon={faTrashCan} />
+                                  </button>
+                                  <button
+                                    className="edit"
+                                    onClick={() => openEditModal(index)}
+                                  >
+                                    <FontAwesomeIcon icon={faEdit} />
+                                  </button>
+                                </div>
+                              )}
+                              <FontAwesomeIcon
+                                className="custom-icon"
+                                icon={
+                                  visibleButtons === index
+                                    ? faClose
+                                    : faEllipsisV
+                                }
+                                onClick={() => toggleButtons(index)}
+                              />
+                            </div>
+                          </div>
                           <p className="description">{project.description}</p>
-                          <p>Github URL: {project.githubUrl}</p>
-                        </div>
-                        <div className="buttons">
-                          <button
-                            className="edit"
-                            onClick={() => openEditModal(index)}
-                          >
-                            <FontAwesomeIcon icon={faEdit} />
-                          </button>
-                          <button
-                            className="delete"
-                            onClick={() => handleDeleteProject(index)}
-                          >
-                            <FontAwesomeIcon icon={faTrashCan} />
-                          </button>
+                          <div className="url-parent">
+                            <div className="url-card">
+                              <p>GitHub URL</p>
+                              <button
+                                onClick={() => copyGitUrl(project.githubUrl)}
+                                className="copy-link"
+                              >
+                                <FontAwesomeIcon icon={faLink} />
+                              </button>
+                            </div>
+                            <div className="url-card">
+                              <p>Hosted URL</p>
+                              <button
+                                onClick={() =>
+                                  copyHostingUrl(project.hostedUrl)
+                                }
+                                className="copy-link"
+                              >
+                                <FontAwesomeIcon icon={faLink} />
+                              </button>
+                            </div>
+                          </div>
+                          <p>{project.dateAdded}</p>
                         </div>
                       </div>
                     ))}
@@ -238,6 +326,26 @@ function Projects() {
                     required
                   />
                 </label>
+                <label>
+                  Hosted URL:
+                  <input
+                    type="text"
+                    name="hostedUrl"
+                    value={newProject.hostedUrl}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </label>
+                <label>
+                  Set Date:
+                  <input
+                    type="text"
+                    name="dateAdded"
+                    value={newProject.dateAdded}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </label>
 
                 <div className="modal-buttons">
                   {isLoading ? (
@@ -255,7 +363,7 @@ function Projects() {
                   )}
 
                   <button
-                    className="cancel"
+                    className="close-button"
                     type="button"
                     onClick={() => setModalIsOpen(false)}
                   >
@@ -275,6 +383,7 @@ function Projects() {
           >
             <div className="modals">
               <img className="modal-logo" src={logo} alt="Modal Logo" />
+
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -293,14 +402,17 @@ function Projects() {
                 </label>
                 <label>
                   Description:
+                  <p className="character">
+                    {editProject.description.length}/{maxDescriptionLength}
+                  </p>
                   <input
                     name="description"
                     value={editProject.description}
+                    maxLength={maxDescriptionLength}
                     onChange={handleEditInputChange}
                     required
                   />
                 </label>
-
                 <label>
                   Github URL:
                   <input
@@ -311,13 +423,23 @@ function Projects() {
                     required
                   />
                 </label>
+                <label>
+                  Hosted URL:
+                  <input
+                    type="text"
+                    name="hostedUrl"
+                    value={newProject.hostedUrl}
+                    onChange={handleEditInputChange}
+                    required
+                  />
+                </label>
 
                 <div className="modal-buttons">
-                  <button type="submit">
-                    {" "}
+                  <button className="add-up" type="submit">
                     <FontAwesomeIcon icon={faSave} />
                   </button>
                   <button
+                    className="close-button"
                     type="button"
                     onClick={() => setEditModalIsOpen(false)}
                   >
@@ -327,21 +449,9 @@ function Projects() {
               </form>
             </div>
           </Modal>
+          <ToastContainer />
         </div>
       </div>
-
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-      />
     </>
   );
 }
