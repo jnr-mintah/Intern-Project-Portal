@@ -1,5 +1,141 @@
-.profile{
-    width: 100%;
-    height: 100vh;
-    display: flex;
+.profile {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+}
+
+.profile-parent {
+  width: 90%;
+  height: 100vh;
+  background-image: radial-gradient(
+      circle at 52% 94%,
+      rgba(169, 169, 169, 0.04) 0%,
+      rgba(169, 169, 169, 0.04) 50%,
+      rgba(199, 199, 199, 0.04) 50%,
+      rgba(199, 199, 199, 0.04) 100%
+    ),
+    radial-gradient(
+      circle at 96% 98%,
+      rgba(61, 61, 61, 0.04) 0%,
+      rgba(61, 61, 61, 0.04) 50%,
+      rgba(201, 201, 201, 0.04) 50%,
+      rgba(201, 201, 201, 0.04) 100%
+    ),
+    radial-gradient(
+      circle at 93% 97%,
+      rgba(227, 227, 227, 0.04) 0%,
+      rgba(227, 227, 227, 0.04) 50%,
+      rgba(145, 145, 145, 0.04) 50%,
+      rgba(145, 145, 145, 0.04) 100%
+    ),
+    radial-gradient(
+      circle at 79% 52%,
+      rgba(245, 245, 245, 0.04) 0%,
+      rgba(245, 245, 245, 0.04) 50%,
+      rgba(86, 86, 86, 0.04) 50%,
+      rgba(86, 86, 86, 0.04) 100%
+    ),
+    linear-gradient(90deg, rgb(210, 9, 198), rgb(25, 38, 118));
+}
+
+.contents {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.733); /* Slightly more transparent */
+  backdrop-filter: blur(15px); /* Increase blur intensity if needed */
+  -webkit-backdrop-filter: blur(15px);
+}
+
+.profile-nav {
+  width: 90%;
+  height: 5rem;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile-text {
+  display: flex;
+  align-items: center;
+  width: 40rem;
+  gap: 20px;
+  font-size: 2rem;
+  color: rgb(25, 45, 89);
+  height: 4rem;
+  background-color: rgb(202, 255, 237);
+  padding-left: 1rem;
+  border-radius: 10px;
+  box-shadow: 0px 0px 7px 1px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0px 0px 7px 1px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0px 0px 7px 1px rgba(0, 0, 0, 0.1);
+}
+
+.icon {
+  width: fit-content;
+}
+
+.profile-text h1 {
+  font-size: 1.7rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: rgb(25, 45, 89);
+  width: fit-content;
+}
+
+.settings-col {
+  width: 20rem;
+  height: 4rem;
+  background-color: rgb(202, 255, 237);
+  border-radius: 10px;
+  box-shadow: 0px 0px 7px 1px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0px 0px 7px 1px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0px 0px 7px 1px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  font-size: 2rem;
+  color: rgb(25, 45, 89);
+}
+
+.main-info {
+  width: 90%;
+  height: 40rem;
+  margin: auto;
+  margin-top: 2rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.person-info {
+  width: 55%;
+  height: 100%;
+  background-color: rgb(255, 202, 248);
+  border-radius: 10px;
+  box-shadow: 0px 0px 7px 1px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0px 0px 7px 1px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0px 0px 7px 1px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.extra-info {
+  width: 40%;
+  height: 100%;
+  background-color: rgb(255, 202, 248);
+  border-radius: 10px;
+  box-shadow: 0px 0px 7px 1px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0px 0px 7px 1px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0px 0px 7px 1px rgba(0, 0, 0, 0.1);
+}
+
+.face {
+  width: 90%;
+  height: 10rem;
+  border: 2px solid red;
+}
+
+.picture {
+  width: 10rem;
+  height: 100%;
+  background-color: white;
 }

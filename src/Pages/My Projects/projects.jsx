@@ -17,9 +17,10 @@ import {
   faTrashCan,
   faEllipsisV,
   faLink,
-  faCopy,
-  faExternalLinkSquare,
   faRocket,
+  faCalendar,
+  faCalendarAlt,
+  faCalendarDay,
 } from "@fortawesome/free-solid-svg-icons";
 
 Modal.setAppElement("#root");
@@ -35,7 +36,7 @@ function Projects() {
     description: "",
     githubUrl: "",
     hostedUrl: "",
-    dateAdded: "",
+    timestamp: "",
   });
 
   const [editProject, setEditProject] = useState({
@@ -44,7 +45,7 @@ function Projects() {
     description: "",
     githubUrl: "",
     hostedUrl: "",
-    dateAdded: "",
+    timestamp: "",
   });
 
   const [projects, setProjects] = useState([]);
@@ -74,7 +75,7 @@ function Projects() {
         InternId: userId,
         title: newProject.title,
         description: newProject.description,
-        dateAdded: newProject.date,
+        timestamp: newProject.date,
       });
       getProject();
     } catch (error) {
@@ -89,7 +90,7 @@ function Projects() {
       description: "",
       githubUrl: "",
       hostedUrl: "",
-      dateAdded: "",
+      timestamp: "",
     });
     setModalIsOpen(false);
   };
@@ -105,6 +106,7 @@ function Projects() {
       const response = await axios.get(apiURL);
 
       const createdProject = response.data;
+      console.log(createdProject);
       setProjects(createdProject);
     } catch (error) {
       console.error("Error:", error);
@@ -126,16 +128,32 @@ function Projects() {
       description: "",
       githubUrl: "",
       hostedUrl: "",
-      dateAdded: "",
+      timestamp: "",
     });
     setEditModalIsOpen(false);
     toast.success("Project updated successfully!");
   };
 
-  const handleDeleteProject = (index) => {
-    setProjects((prev) => prev.filter((_, i) => i !== index));
-    toast.success("Project deleted successfully!");
+  const handleDeleteProject = async (projectId) => {
+    try {
+      // const projectId = projects[index].id; 
+  
+      const apiURL = `https://cth-interns-portal.onrender.com/api/intern/project/delete/${projectId}`;
+  
+      await axios.delete(apiURL, {
+        // headers: {
+        //   Authorization: `Bearer ${token}`
+        // }
+      });
+  
+      // setProjects((prev) => prev.filter((_, i) => i !== index));
+      toast.success("Project deleted successfully!");
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error(error.response.data);
+    }
   };
+  
 
   const openEditModal = (index) => {
     setEditProject({ ...projects[index], index });
@@ -211,66 +229,79 @@ function Projects() {
               <div className="project-card">
                 <div className="intern-card">
                   <div className="interns">
-                    {projects.map((project, index) => (
-                      <div key={index} className="project-item">
-                        <div className="project-info">
-                          <div className="title-n-dots">
-                            <h3>{project.title}</h3>
-                            <div className="dot-edit-delete">
-                              {visibleButtons === index && (
-                                <div className="buttons">
-                                  <button
-                                    className="delete"
-                                    onClick={() => handleDeleteProject(index)}
-                                  >
-                                    <FontAwesomeIcon icon={faTrashCan} />
-                                  </button>
-                                  <button
-                                    className="edit"
-                                    onClick={() => openEditModal(index)}
-                                  >
-                                    <FontAwesomeIcon icon={faEdit} />
-                                  </button>
-                                </div>
-                              )}
-                              <FontAwesomeIcon
-                                className="custom-icon"
-                                icon={
-                                  visibleButtons === index
-                                    ? faClose
-                                    : faEllipsisV
-                                }
-                                onClick={() => toggleButtons(index)}
-                              />
+                    {projects
+                      .filter((project) =>
+                        project.title
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
+                      )
+                      .map((project, index) => (
+                        <div key={index} className="project-item">
+                          <div className="project-info">
+                            <div className="title-n-dots">
+                              <h3>{project.title}</h3>
+                              <div className="dot-edit-delete">
+                                {visibleButtons === index && (
+                                  <div className="buttons">
+                                    <button
+                                      className="delete"
+                                      onClick={() => handleDeleteProject(project._id)}
+                                    >
+                                      <FontAwesomeIcon icon={faTrashCan} />
+                                    </button>
+                                    <button
+                                      className="edit"
+                                      onClick={() => openEditModal(index)}
+                                    >
+                                      <FontAwesomeIcon icon={faEdit} />
+                                    </button>
+                                  </div>
+                                )}
+                                <FontAwesomeIcon
+                                  className="custom-icon"
+                                  icon={
+                                    visibleButtons === index
+                                      ? faClose
+                                      : faEllipsisV
+                                  }
+                                  onClick={() => toggleButtons(index)}
+                                />
+                              </div>
+                            </div>
+                            <p className="description">{project.description}</p>
+                            <div className="url-parent">
+                              <div className="url-card">
+                                <p>GitHub URL</p>
+                                <button
+                                  onClick={() => copyGitUrl(project.githubUrl)}
+                                  className="copy-link"
+                                >
+                                  <FontAwesomeIcon icon={faLink} />
+                                </button>
+                              </div>
+                              <div className="url-card">
+                                <p>Hosted URL</p>
+                                <button
+                                  onClick={() =>
+                                    copyHostingUrl(project.hostedUrl)
+                                  }
+                                  className="copy-link"
+                                >
+                                  <FontAwesomeIcon icon={faLink} />
+                                </button>
+                              </div>
+                            </div>
+                            <div className="calendar">
+                              <FontAwesomeIcon icon={faCalendarDay} />
+                              <p>
+                                {new Date(
+                                  project.timestamp
+                                ).toLocaleDateString()}
+                              </p>
                             </div>
                           </div>
-                          <p className="description">{project.description}</p>
-                          <div className="url-parent">
-                            <div className="url-card">
-                              <p>GitHub URL</p>
-                              <button
-                                onClick={() => copyGitUrl(project.githubUrl)}
-                                className="copy-link"
-                              >
-                                <FontAwesomeIcon icon={faLink} />
-                              </button>
-                            </div>
-                            <div className="url-card">
-                              <p>Hosted URL</p>
-                              <button
-                                onClick={() =>
-                                  copyHostingUrl(project.hostedUrl)
-                                }
-                                className="copy-link"
-                              >
-                                <FontAwesomeIcon icon={faLink} />
-                              </button>
-                            </div>
-                          </div>
-                          <p>{project.dateAdded}</p>
                         </div>
-                      </div>
-                    ))}
+                      ))}
                   </div>
                 </div>
               </div>
@@ -336,16 +367,7 @@ function Projects() {
                     required
                   />
                 </label>
-                <label>
-                  Set Date:
-                  <input
-                    type="text"
-                    name="dateAdded"
-                    value={newProject.dateAdded}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </label>
+              
 
                 <div className="modal-buttons">
                   {isLoading ? (

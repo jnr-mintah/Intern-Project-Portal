@@ -25,11 +25,10 @@ function Form() {
     const { name, value } = e.target;
     setData((prev) => ({ ...prev, [name]: value }));
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
+  
     try {
       const response = isLogin
         ? await axios.post(
@@ -43,18 +42,29 @@ function Form() {
             "https://cth-interns-portal.onrender.com/api/intern/signUp",
             formData
           );
-
+  
       const successMessage = isLogin
         ? "Login Successful!"
         : response.data.message || "Sign Up Successful";
       toast.success(successMessage);
-
-      const authToken = response.data.user.token;
-      const userId = response.data.user.id;
-
-      localStorage.setItem("token", authToken);
-      localStorage.setItem("userId", userId);
-
+  
+      const authToken = response.data.user?.token || response.data.token;
+      const userId = response.data.user?.id || response.data.id;
+  
+      if (authToken && userId) {
+        localStorage.setItem("token", authToken);
+        localStorage.setItem("userId", userId);
+  
+        // Double-check that the values are stored before navigating
+        console.log("Token:", localStorage.getItem("token"));
+        console.log("UserId:", localStorage.getItem("userId"));
+  
+        // Ensure immediate navigation after sign-up or login
+        navigate("/projects");
+      } else {
+        toast.error("Failed to retrieve authentication details.");
+      }
+  
       if (!isLogin) {
         setData({
           name: "",
@@ -64,7 +74,6 @@ function Form() {
           password: "",
         });
       }
-      navigate("/projects");
     } catch (error) {
       console.error(`${isLogin ? "Login" : "Registration"} Error:`, error);
       const errorMessage =
@@ -75,6 +84,7 @@ function Form() {
       setLoading(false);
     }
   };
+    
 
   const toggleForm = () => {
     setIsLogin((prev) => !prev);

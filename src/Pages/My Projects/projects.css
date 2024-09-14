@@ -176,8 +176,7 @@
   width: 1.5rem;
   padding: 2px;
   height: 1.5rem;
-  background-color: #0c9176;
-  color: white;
+  color: #0c9176;
 }
 
 
@@ -208,6 +207,17 @@
   justify-content: space-between;
 }
 
+.calendar{
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  gap: 10px;
+  font-size: 1.5rem;
+  color: #0c9176;
+}
+
+
+
 .project-item {
   border-radius: 5px;
   background-color: white;
@@ -217,7 +227,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 20rem;
+  /* min-height: 20rem; */
+  height: fit-content;
 }
 
 .character {
@@ -226,8 +237,9 @@
 }
 
 .description {
-  border: 3px solid rgba(0, 0, 0, 0.342);
-  height: 8rem;
+  border: 3px solid rgba(0, 0, 0, 0.068);
+  height: fit-content;
+  min-height: 10rem;
   padding: 5px;
   border-radius: 5px;
   /* background-color: red; */

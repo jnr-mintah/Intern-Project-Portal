@@ -1,6 +1,6 @@
 import "../Sidebar/side.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faRocket, faFile, faUsers } from "@fortawesome/free-solid-svg-icons";
+import { faRocket, faFile, faUsers, faBarChart, faClipboard } from "@fortawesome/free-solid-svg-icons";
 import { NavLink } from "react-router-dom";
 import logo from "/src/assets/cthLogo.png"
 
@@ -9,7 +9,7 @@ function Sidebar() {
 
   const sidebarItems = [
     { text: "Projects", icon: faRocket, path: "/projects" },
-    { text: "Reports", icon: faFile, path: "/reporting" },
+    { text: "Reports", icon: faClipboard, path: "/reporting" },
     { text: "Profile", icon: faUsers, path: "/profile" },
   ];
 
